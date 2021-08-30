@@ -1,6 +1,7 @@
 using Project.Scripts.Behaviors;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 namespace Project.Scripts.Player
 {
@@ -35,9 +36,10 @@ namespace Project.Scripts.Player
 
         [SerializeField] private Rigidbody rb;
 
-        private List<Vector3> path;
+        private Vector3[] path;
 
         public TeamBattleState teamBattleState;
+        public int teamMemberID;
 
         // Start is called before the first frame update
         void Start()
@@ -56,6 +58,8 @@ namespace Project.Scripts.Player
             if (currentTurnState == CharacterTurnState.DO_TURN) {
                 teamBattleState.ClearTeamSelections();
                 SetSelection(true, this.transform);
+                //this is for testing, don't finish turn if you click the player
+                FinishTurn();
             }
         }
 
@@ -70,9 +74,36 @@ namespace Project.Scripts.Player
             m_isSelected = _selected;
         }
 
-        public void SetWaypoint(Vector3 newPos)
+        public void FinishTurn()
         {
+            currentTurnState = CharacterTurnState.TURN_FINISH;
+            teamBattleState.SetPlayerTurnOver(teamMemberID);
+        }
 
+        public void SetPath(Vector3[] _path)
+        {
+            if(path.Length > 0)
+            {
+                for (int i = 0; i < path.Length; i++)
+                {
+                    path[i] = Vector3.zero;
+                }
+                path = new Vector3[0];
+            }
+
+            if(_path != null && _path.Length > 0)
+            {
+                path = new Vector3[_path.Length];
+                for (int i = 0; i < _path.Length; i++)
+                {
+                    path[i] = _path[i];
+                }
+            }
+        }
+
+        public void MovePath(float _duration)
+        {
+            rb.DOPath(path, _duration, PathType.Linear);
         }
 
         /// <summary>

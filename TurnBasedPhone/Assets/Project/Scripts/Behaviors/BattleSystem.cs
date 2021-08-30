@@ -55,6 +55,10 @@ namespace Project.Scripts.Behaviors
             yield return new WaitUntil(() => gridGen.genState == GridGeneration.GenerationState.FINISHED);
             Debug.Log("Finished generating grid");
             yield return new WaitForSeconds(1);
+            foreach (var team in teams)
+            {
+                team.InitilizeTeam();
+            }
             StartCoroutine(PlayerLevelSetup());
         }
 
@@ -74,10 +78,12 @@ namespace Project.Scripts.Behaviors
             currentState = BattleState.COIN_FLIP;
             Debug.Log("<color=yellow>start coinflip</color>");
             stateUI.DoTextAnimation(1);
+            int coinFlip = Random.Range(0,2);
             yield return new WaitUntil(() => !stateUI.isInAnimation);
             Debug.Log("<color=#00ff00>finished coin flip</color>");
             yield return new WaitForSeconds(1);
-            StartCoroutine(TeamTwoTurn());
+            if(coinFlip == 0) StartCoroutine(TeamOneTurn());
+            else StartCoroutine(TeamTwoTurn());
         }
 
         private IEnumerator TeamOneTurn()
@@ -85,15 +91,19 @@ namespace Project.Scripts.Behaviors
             currentState = BattleState.TEAM_ONE_TURN;
             Debug.Log("<color=cyan>start team 1 turn</color>");
             stateUI.TeamTurnAnimation(1);
+            int currentTeamID = 0;
+            teams[currentTeamID].SetTeamTurnState(TeamBattleState.State.BEGIN_TURN);
             //wait until team is done with turn
             //yield return new WaitUntil(() => gridGen.genState == GridGeneration.GenerationState.FINISHED);
             //test
             yield return new WaitUntil(() => !stateUI.isInAnimation);
             //If team 1 is dead team 2 wins, otherwise it's team 2's turn
             testInt++;
+           
+            yield return new WaitUntil(() => teams[0].currentState == TeamBattleState.State.COMPLETED_ACTIONS);
             Debug.Log("<color=cyan>finish team 1 turn</color>");
-            yield return new WaitForSeconds(1);
             //test, TODO: if team is dead
+            teams[currentTeamID].SetTeamTurnState(TeamBattleState.State.WAIT_FOR_TURN);
             if (testInt < 3) StartCoroutine(TeamTwoTurn());
             else StartCoroutine(EndGame());
         }
@@ -103,14 +113,18 @@ namespace Project.Scripts.Behaviors
             currentState = BattleState.TEAM_TWO_TURN;
             Debug.Log("<color=orange>start team 2 turn</color>");
             stateUI.TeamTurnAnimation(2);
+            int currentTeamID = 1;
+            teams[currentTeamID].SetTeamTurnState(TeamBattleState.State.BEGIN_TURN);
             //wait until team is done with turn
             //yield return new WaitUntil(() => gridGen.genState == GridGeneration.GenerationState.FINISHED);
             //test
             yield return new WaitUntil(() => !stateUI.isInAnimation);
+            //time between animation and offset
+            yield return new WaitUntil(() => teams[1].currentState == TeamBattleState.State.COMPLETED_ACTIONS);
             Debug.Log("<color=orange>finish team 2 turn</color>");
-            yield return new WaitForSeconds(1);
             //If team 2 is dead team 1 wins, otherwise it's team 1's turn
-            if (!teams[1].teamIsDead) StartCoroutine(TeamOneTurn());
+            teams[currentTeamID].SetTeamTurnState(TeamBattleState.State.WAIT_FOR_TURN);
+            if (!teams[currentTeamID].teamIsDead) StartCoroutine(TeamOneTurn());
             else StartCoroutine(EndGame());
         }
 
