@@ -37,14 +37,19 @@ namespace Project.Scripts.Behaviors
         [SerializeField] private Transform movePosition;
         [SerializeField] private Transform abilityUseLocation;
         [Header("Individual combat UI")]
-        [SerializeField] private Button attackAction = null;
-        [SerializeField] private Button moveAction = null;
-        [SerializeField] private Button abilityAction = null;
+        [SerializeField] private Button m_attackActionButton;
+        [SerializeField] private Button m_moveActionButton;
+        [SerializeField] private Button m_abilityActionButton;
 
-        public void InitilizeTeam()
+        public void InitilizeTeam(Color _teamColor)
         {
+            //TODO: Make this script call the desired team color.
+            //TODO: maybe start coin flip earlier?
             //get character prefabs
 
+            //set colors
+            InitializeTeamColors(_teamColor);
+            InitializeButtons();
             //add characters to teamMembers
 
             //give teamMembers this battleState script
@@ -66,6 +71,14 @@ namespace Project.Scripts.Behaviors
 
         }
 
+        private void InitializeButtons()
+        {
+            currentPlayer = teamMembers[0];
+            m_moveActionButton.onClick.AddListener(currentPlayer.MovePath);
+            m_attackActionButton.onClick.AddListener(currentPlayer.DoAttackAction);
+            m_abilityActionButton.onClick.AddListener(currentPlayer.DoAbilityAction);
+        }
+
         public void InitializeTeamMembers()
         {
             playerFinishedTurn = new bool[teamMembers.Count];
@@ -74,6 +87,14 @@ namespace Project.Scripts.Behaviors
             {
                 teamMembers[i].teamBattleState = this;
                 teamMembers[i].teamMemberID = i;
+            }
+        }
+
+        private void InitializeTeamColors(Color _teamColor)
+        {
+            foreach (var member in teamMembers)
+            {
+                member.SetTeamColor(_teamColor);
             }
         }
 
@@ -123,9 +144,10 @@ namespace Project.Scripts.Behaviors
             }
         }
 
-        public void SetSelectedObject(Transform _target)
+        public void SetSelectedObject(Transform _target, PlayerCharacterBehavior _player)
         {
             cam.SetPosition(_target);
+            currentPlayer = _player;
         }
 
 

@@ -7,6 +7,8 @@ using Rewired;
 
 namespace Project.Scripts.Behaviors
 {
+
+
     public class BattleSystem : MonoBehaviour
     {
 
@@ -24,6 +26,8 @@ namespace Project.Scripts.Behaviors
         public GridGeneration gridGen;
         public TeamBattleState[] teams;
         public BattleStateUI stateUI;
+
+        public List<Color> teamDistinguishers;
 
         private int testInt = 0;
 
@@ -45,19 +49,21 @@ namespace Project.Scripts.Behaviors
                 //PrefabUtility.SaveAsPrefabAsset(newPlayer, "Assets/Project/Prefabs/TestNewPlayer.prefab");
                 //PrefabUtility.SaveAsPrefabAsset(newTeamMember, "Assets/Project/Prefabs/TeamMember1.prefab");
         }
-
+        //TODO:COLORS MIGHT JUST BE FOR TESTING
         private IEnumerator Initialize()
         {
             //setup grid
-            //setup team
             Debug.Log("Begin Generating Grid");
             gridGen.GenerateGrid();
             yield return new WaitUntil(() => gridGen.genState == GridGeneration.GenerationState.FINISHED);
             Debug.Log("Finished generating grid");
             yield return new WaitForSeconds(1);
+            //setup team
             foreach (var team in teams)
             {
-                team.InitilizeTeam();
+                int randomTeamColor = Random.Range(0, teamDistinguishers.Count);
+                team.InitilizeTeam(teamDistinguishers[randomTeamColor]);
+                teamDistinguishers.RemoveAt(randomTeamColor);
             }
             StartCoroutine(PlayerLevelSetup());
         }

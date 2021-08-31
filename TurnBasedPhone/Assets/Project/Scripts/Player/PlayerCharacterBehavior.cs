@@ -2,6 +2,7 @@ using Project.Scripts.Behaviors;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System.Collections;
 
 namespace Project.Scripts.Player
 {
@@ -12,6 +13,10 @@ namespace Project.Scripts.Player
         {
             IDLE,
             DO_TURN,
+            SELECTING_MOVE,
+            MOVING,
+            ATTACKING,
+            USING_ABILITY,
             TURN_FINISH
         }
 
@@ -22,6 +27,7 @@ namespace Project.Scripts.Player
             DEAD
         }
 
+        [Header("Player states")]
         public CharacterTurnState currentTurnState = CharacterTurnState.IDLE;
 
         public CharacterHealthState healthState = CharacterHealthState.FULL_HEALTH;
@@ -30,16 +36,21 @@ namespace Project.Scripts.Player
         [SerializeField] private bool m_canMove, m_canAttack, m_canUseAbility;
         private bool m_isSelected = false;
 
+        [Header("Player variables")]
         //In current context, SPEED is tied to tile movement spaces.
         [SerializeField] private int m_currentSpeed;
         [SerializeField] private int slowedSpeed, maxSpeed, normalSpeed;
 
         [SerializeField] private Rigidbody rb;
 
-        private Vector3[] path;
+        [Header("Battle variables")]
+        [SerializeField] private Vector3[] path;
 
         public TeamBattleState teamBattleState;
         public int teamMemberID;
+
+        [Header("Character variables")]
+        [SerializeField] private SkinnedMeshRenderer playerModel;
 
         // Start is called before the first frame update
         void Start()
@@ -50,23 +61,27 @@ namespace Project.Scripts.Player
         // Update is called once per frame
         void Update()
         {
-            
+
         }
 
         private void OnMouseDown()
         {
             if (currentTurnState == CharacterTurnState.DO_TURN) {
                 teamBattleState.ClearTeamSelections();
-                SetSelection(true, this.transform);
-                //this is for testing, don't finish turn if you click the player
-                FinishTurn();
+                SetSelection(true, this.transform, this);
+                
             }
         }
 
-        private void SetSelection(bool _selected, Transform _player)
+        public void SetTeamColor(Color _teamColor)
+        {
+            playerModel.materials[0].SetColor("_OutlineColor", _teamColor);
+        }
+
+        private void SetSelection(bool _selected, Transform _player, PlayerCharacterBehavior _playerBehavior)
         {
             m_isSelected = _selected;
-            teamBattleState.SetSelectedObject(_player);
+            teamBattleState.SetSelectedObject(_player, _playerBehavior);
         }
 
         public void SetSelectionState(bool _selected)
@@ -82,7 +97,7 @@ namespace Project.Scripts.Player
 
         public void SetPath(Vector3[] _path)
         {
-            if(path.Length > 0)
+            if (path.Length > 0)
             {
                 for (int i = 0; i < path.Length; i++)
                 {
@@ -91,7 +106,7 @@ namespace Project.Scripts.Player
                 path = new Vector3[0];
             }
 
-            if(_path != null && _path.Length > 0)
+            if (_path != null && _path.Length > 0)
             {
                 path = new Vector3[_path.Length];
                 for (int i = 0; i < _path.Length; i++)
@@ -101,9 +116,55 @@ namespace Project.Scripts.Player
             }
         }
 
-        public void MovePath(float _duration)
+        public void MovePath()
         {
-            rb.DOPath(path, _duration, PathType.Linear);
+            Debug.Log("<color=green>Moving Player</color>");
+            if (path.Length > 0 && path != null)
+            {
+                float _estimatedDuration = path.Length / m_currentSpeed;
+                rb.DOPath(path, _estimatedDuration, PathType.Linear);
+                currentTurnState = CharacterTurnState.MOVING;
+                StartCoroutine(DoMoveAction(_estimatedDuration, 1f));
+            }
+            else
+            {
+                m_canMove = false;
+                if (m_canAttack || m_canUseAbility)
+                    currentTurnState = CharacterTurnState.DO_TURN;
+                else
+                    FinishTurn();
+            }
+            
+        }
+
+        private IEnumerator DoMoveAction(float _duration, float offset)
+        {
+            yield return new WaitForSeconds(_duration + offset);
+            m_canMove = false;
+            if (m_canAttack || m_canUseAbility)
+                currentTurnState = CharacterTurnState.DO_TURN;
+            else
+                FinishTurn();
+        }
+
+        public void DoAttackAction()
+        {
+            Debug.Log("<color=green>Attacking Player</color>");
+            m_canAttack = false;
+            if (m_canMove || m_canUseAbility)
+                currentTurnState = CharacterTurnState.DO_TURN;
+            else
+                FinishTurn();
+        }
+
+        public void DoAbilityAction()
+        {
+            Debug.Log("<color=green>Using ability Player</color>");
+            m_canUseAbility = false;
+            if (m_canAttack || m_canMove)
+                currentTurnState = CharacterTurnState.DO_TURN;
+            else
+                FinishTurn();
         }
 
         /// <summary>
