@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 5fb1b6c5a326d1a428fee3334bdab0f9
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - HGSoeiKakupoptai
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 30f5ab5d799692741b7ce59723fcb263, type: 3}
+  - {fileID: 12800000, guid: 51e580ea14796054ab541aa27a7fe1f2, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

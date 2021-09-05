@@ -40,6 +40,7 @@ namespace Project.Scripts.Behaviors
         [SerializeField] private Button m_attackActionButton;
         [SerializeField] private Button m_moveActionButton;
         [SerializeField] private Button m_abilityActionButton;
+        [SerializeField] private GameObject teamCanvas;
 
         public void InitilizeTeam(Color _teamColor)
         {
@@ -74,11 +75,34 @@ namespace Project.Scripts.Behaviors
         private void InitializeButtons()
         {
             currentPlayer = teamMembers[0];
-            m_moveActionButton.onClick.AddListener(currentPlayer.MovePath);
-            m_attackActionButton.onClick.AddListener(currentPlayer.DoAttackAction);
-            m_abilityActionButton.onClick.AddListener(currentPlayer.DoAbilityAction);
+            m_moveActionButton.onClick.AddListener(CallCurrentPlayerMove);
+            m_attackActionButton.onClick.AddListener(CallCurrentPlayerAttack);
+            m_abilityActionButton.onClick.AddListener(CallCurrentPlayerAbility);
+
+            m_abilityActionButton.onClick.Invoke();
         }
 
+        #region Button functions
+        private void CallCurrentPlayerMove()
+        {
+            Debug.Log(currentPlayer.name);
+            currentPlayer.MovePath();
+        }
+
+        private void CallCurrentPlayerAttack()
+        {
+            currentPlayer.DoAttackAction();
+        }
+
+        private void CallCurrentPlayerAbility()
+        {
+            currentPlayer.DoAbilityAction();
+        }
+
+        #endregion
+
+
+        #region Methods
         public void InitializeTeamMembers()
         {
             playerFinishedTurn = new bool[teamMembers.Count];
@@ -104,7 +128,6 @@ namespace Project.Scripts.Behaviors
             {
                 playerFinishedTurn[i] = false;
             }
-
             SetTeamTurnState(State.DOING_ACTIONS);
         }
 
@@ -113,12 +136,18 @@ namespace Project.Scripts.Behaviors
         {
             currentState = _state;
 
-            if(currentState == State.BEGIN_TURN)
+            if (currentState == State.DOING_ACTIONS)
+                teamCanvas.SetActive(true);
+            else
+                teamCanvas.SetActive(false);
+
+            if (currentState == State.BEGIN_TURN)
             {
                 ResetPlayerTurns();
                 foreach (var member in teamMembers)
                 {
                     member.SetTurnState(member.currentTurnState = PlayerCharacterBehavior.CharacterTurnState.DO_TURN);
+                    member.ResetActions();
                 }
             }else if (currentState == State.COMPLETED_ACTIONS)
             {
@@ -158,6 +187,8 @@ namespace Project.Scripts.Behaviors
                 character.SetSelectionState(false);
             }
         }
+
+        #endregion
     }
 }
 

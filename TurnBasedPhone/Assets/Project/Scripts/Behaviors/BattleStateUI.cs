@@ -55,7 +55,7 @@ namespace Project.Scripts.Behaviors
 
         private void CoinFlipAnimation()
         {
-            animationText.text = "CoinFlip";
+            animationText.text = "Coin Flip";
             StartCoroutine(DoAnimation());
         }
 

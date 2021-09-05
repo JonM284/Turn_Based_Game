@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using Rewired;
 
 namespace Project.Scripts.Behaviors
 {
@@ -87,6 +86,7 @@ namespace Project.Scripts.Behaviors
             int coinFlip = Random.Range(0,2);
             yield return new WaitUntil(() => !stateUI.isInAnimation);
             Debug.Log("<color=#00ff00>finished coin flip</color>");
+            //TODO:Wait for coin flip animation to end
             yield return new WaitForSeconds(1);
             if(coinFlip == 0) StartCoroutine(TeamOneTurn());
             else StartCoroutine(TeamTwoTurn());

@@ -91,6 +91,7 @@ namespace Project.Scripts.Player
 
         public void FinishTurn()
         {
+            Debug.Log("Finished turn" +transform.name);
             currentTurnState = CharacterTurnState.TURN_FINISH;
             teamBattleState.SetPlayerTurnOver(teamMemberID);
         }
@@ -129,10 +130,7 @@ namespace Project.Scripts.Player
             else
             {
                 m_canMove = false;
-                if (m_canAttack || m_canUseAbility)
-                    currentTurnState = CharacterTurnState.DO_TURN;
-                else
-                    FinishTurn();
+                CheckEndTurn();
             }
             
         }
@@ -141,30 +139,30 @@ namespace Project.Scripts.Player
         {
             yield return new WaitForSeconds(_duration + offset);
             m_canMove = false;
-            if (m_canAttack || m_canUseAbility)
-                currentTurnState = CharacterTurnState.DO_TURN;
-            else
-                FinishTurn();
+            CheckEndTurn();
         }
+
 
         public void DoAttackAction()
         {
             Debug.Log("<color=green>Attacking Player</color>");
             m_canAttack = false;
-            if (m_canMove || m_canUseAbility)
-                currentTurnState = CharacterTurnState.DO_TURN;
-            else
-                FinishTurn();
+            CheckEndTurn();
         }
 
         public void DoAbilityAction()
         {
             Debug.Log("<color=green>Using ability Player</color>");
             m_canUseAbility = false;
-            if (m_canAttack || m_canMove)
-                currentTurnState = CharacterTurnState.DO_TURN;
-            else
+            CheckEndTurn();
+        }
+
+        public void CheckEndTurn()
+        {
+            if (!m_canMove && !m_canUseAbility && !m_canAttack)
                 FinishTurn();
+            else
+                currentTurnState = CharacterTurnState.DO_TURN;
         }
 
         /// <summary>
