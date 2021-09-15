@@ -85,7 +85,6 @@ namespace Project.Scripts.Behaviors
         #region Button functions
         private void CallCurrentPlayerMove()
         {
-            Debug.Log(currentPlayer.name);
             currentPlayer.MovePath();
         }
 

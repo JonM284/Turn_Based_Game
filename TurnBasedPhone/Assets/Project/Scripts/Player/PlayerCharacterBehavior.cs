@@ -52,6 +52,10 @@ namespace Project.Scripts.Player
         [Header("Character variables")]
         [SerializeField] private SkinnedMeshRenderer playerModel;
 
+
+        [Header("Weapon Variables")]
+        [SerializeField] private float attackRange;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -61,7 +65,10 @@ namespace Project.Scripts.Player
         // Update is called once per frame
         void Update()
         {
-
+            if (currentTurnState == CharacterTurnState.ATTACKING)
+            {
+              
+            }
         }
 
         private void OnMouseDown()
@@ -142,6 +149,15 @@ namespace Project.Scripts.Player
             CheckEndTurn();
         }
 
+        public void InitializeAttackAction()
+        {
+            SetTurnState(CharacterTurnState.ATTACKING);
+        }
+
+        public void CancelAttackAction()
+        {
+
+        }
 
         public void DoAttackAction()
         {

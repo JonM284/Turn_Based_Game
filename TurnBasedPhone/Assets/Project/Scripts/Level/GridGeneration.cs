@@ -10,7 +10,9 @@ namespace Project.Scripts.Level
         [SerializeField] private Vector2Int gridAmount;
         [SerializeField] private float gridPieceSize;
 
-        [SerializeField] private GameObject gridFloorPrefab;
+        [SerializeField] private GameObject gridFloorPrefab, gridOffsetFloorPrefab;
+
+        [SerializeField] private Material offsetMaterial;
 
         public GameObject[,] gridObjects;
 
@@ -38,8 +40,18 @@ namespace Project.Scripts.Level
                     float yPos = transform.position.z + y * gridPieceSize;
 
                     Vector3 spawnLoc = new Vector3(xPos, transform.position.y, yPos);
-
-                    GameObject currentGridPiece = Instantiate(gridFloorPrefab, spawnLoc, Quaternion.identity);
+                    GameObject currentGridPiece = null;
+                    if ((x % 2 == 0 && y % 2 != 1))
+                    {
+                        currentGridPiece = Instantiate(gridOffsetFloorPrefab, spawnLoc, Quaternion.identity);
+                    }else if (x % 2 != 0 && y % 2 != 0)
+                    {
+                        currentGridPiece = Instantiate(gridOffsetFloorPrefab, spawnLoc, Quaternion.identity);
+                    }
+                    else
+                    {
+                        currentGridPiece = Instantiate(gridFloorPrefab, spawnLoc, Quaternion.identity);
+                    }
                     currentGridPiece.transform.parent = this.transform;
 
                     gridObjects[x, y] = currentGridPiece;

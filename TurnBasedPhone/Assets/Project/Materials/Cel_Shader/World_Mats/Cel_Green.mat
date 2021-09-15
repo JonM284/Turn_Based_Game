@@ -138,9 +138,9 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FresnelColor: {r: 0.672, g: 0.672, b: 1, a: 1}
-    - _HighColor: {r: 0.567398, g: 0.9245283, b: 0.5442506, a: 1}
-    - _LowColor: {r: 0.19350788, g: 0.4528302, b: 0.18540406, a: 1}
+    - _FresnelColor: {r: 0.41367036, g: 0.41367036, b: 0.6603774, a: 1}
+    - _HighColor: {r: 0.41768232, g: 0.745283, b: 0.3965468, a: 1}
+    - _LowColor: {r: 0.09291143, g: 0.3018868, b: 0.08657884, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0.109, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

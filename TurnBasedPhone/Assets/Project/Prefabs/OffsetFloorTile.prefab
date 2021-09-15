@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8324194720742374155}
   - component: {fileID: 8324194720742374152}
   m_Layer: 0
-  m_Name: Floor_Tile
+  m_Name: OffsetFloorTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -60,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 91290439684371b4188d11226ca893f3, type: 2}
+  - {fileID: 2100000, guid: 23aa9990a0b4398478ab59fc7287c4a9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
