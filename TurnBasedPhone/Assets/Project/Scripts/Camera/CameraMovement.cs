@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using Rewired;
+using UnityEngine.UI;
 
 
 namespace Project.Scripts.Camera
@@ -11,11 +12,13 @@ namespace Project.Scripts.Camera
     {
         private Vector3 m_desiredCameraPos;
         private Vector3 offset;
-        private float rotationAmount;
+
         private float inputDir;
 
         private Rewired.Player m_player;
 
+
+        [Header("Camera Variables")]
         [SerializeField] private float rotationSpeed;
         [SerializeField] private Transform target;
         [Range(1, 2)]
@@ -26,20 +29,42 @@ namespace Project.Scripts.Camera
         [SerializeField] private float duration;
         [Range(1,20)]
         [SerializeField] private int intensity;
+        [Tooltip("Amount of positions the camera can rotate to")]
+        [SerializeField] private int rotationAngles = 2;
         private bool m_isShakingCamera = false;
+
+        [SerializeField]
+        private Button rightRotateButton = null;
+        [SerializeField]
+        private Button leftRotateButton = null;
+
+        //Touch controls
+        [Header("Touch Controls")]
+        [SerializeField] private float touchDistance = 30f;
+        private Vector2 initialTouchPos;
+        private Vector2 currentTouchPos;
+        private bool fingerDown = false;
+        [SerializeField] private float desiredRotationAmount;
+        [SerializeField] private Vector3 rotationAmount;
+
+
+        private float rotationMax = 360;
+        [SerializeField]private float rotationAddAmount;
 
         // Start is called before the first frame update
         void Start()
         {
             m_player = ReInput.players.GetPlayer(0);
             SetPosition(target);
+            rotationAddAmount = rotationMax / rotationAngles;
+            rightRotateButton.onClick.AddListener(RotateRight);
+            leftRotateButton.onClick.AddListener(RotateLeft);
         }
 
         // Update is called once per frame
         void Update()
         {
             PlayerInput();
-            transform.RotateAround(target.position, Vector3.up, rotationAmount);
         }
 
         public void SetPosition(Transform _target)
@@ -51,9 +76,10 @@ namespace Project.Scripts.Camera
 
         void PlayerInput()
         {
-            float rotation_set = m_player.GetAxisRaw("Horizontal");
 
-            rotationAmount = Mathf.Lerp(rotationAmount, rotation_set, rotationSpeed * Time.deltaTime);
+            Vector3 desiredRotation = new Vector3(0, desiredRotationAmount, 0);
+            rotationAmount = Vector3.Slerp(rotationAmount, desiredRotation, rotationSpeed * Time.deltaTime);
+            transform.localRotation = Quaternion.Euler(rotationAmount);
 
             float zoom_set = m_player.GetAxisRaw("Vertical");
 
@@ -63,6 +89,22 @@ namespace Project.Scripts.Camera
             else if(zoom_set == -1) zoom -= Time.deltaTime * zoomSpeed;
             zoom = Mathf.Clamp(zoom, 1, 3);
             transform.localScale = new Vector3(zoom, zoom, zoom);
+        }
+
+        private void RotateRight()
+        {
+            RotateCamera(-rotationAddAmount);
+        }
+
+        private void RotateLeft()
+        {
+            RotateCamera(rotationAddAmount);
+        }
+
+        private void RotateCamera(float _amount)
+        {
+            desiredRotationAmount += _amount;
+
         }
 
         /// <summary>

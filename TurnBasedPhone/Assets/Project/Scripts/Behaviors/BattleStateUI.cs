@@ -10,12 +10,16 @@ namespace Project.Scripts.Behaviors
     {
 
         [SerializeField] private TextMeshProUGUI animationText;
+        [SerializeField] private TextMeshProUGUI teamTimerText;
 
         [SerializeField] private RectTransform endPosition;
+        [SerializeField] private RectTransform offscreenPos;
 
-        private Vector3 initialPosition;
+        [SerializeField] private Vector2 initialPosition;
 
         [SerializeField] private float initialDuration, waitDuration, outDuration;
+
+        [SerializeField] private RectTransform turnCounter;
 
         public bool isInAnimation = false;
 
@@ -64,7 +68,9 @@ namespace Project.Scripts.Behaviors
             isInAnimation = true;
             if (teamID == 0) teamID = 1;
             if (!animationText.gameObject.activeInHierarchy) animationText.gameObject.SetActive(true);
-            animationText.text = $"Team {teamID} Turn";
+            string _displayText = string.Format("Team {0} Turn", teamID);
+            animationText.text = _displayText;
+            teamTimerText.text = _displayText;
             StartCoroutine(DoAnimation());
 
         }
@@ -75,6 +81,11 @@ namespace Project.Scripts.Behaviors
             StartCoroutine(DoAnimation());
         }
 
+        public void SetTurnCountdown(bool _visible)
+        {
+            turnCounter.gameObject.SetActive(_visible);
+        }
+
 
         private IEnumerator DoAnimation()
         {
@@ -82,7 +93,7 @@ namespace Project.Scripts.Behaviors
             yield return new WaitForSeconds(initialDuration);
             //wait
             yield return new WaitForSeconds(waitDuration);
-            animationText.rectTransform.DOMove(initialPosition, outDuration);
+            animationText.rectTransform.DOMove(offscreenPos.position, outDuration);
             float offset = 0.6f;
             yield return new WaitForSeconds(outDuration + offset);
             animationText.gameObject.SetActive(false);
