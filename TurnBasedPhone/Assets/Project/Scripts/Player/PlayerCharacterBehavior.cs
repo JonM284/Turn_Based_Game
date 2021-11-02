@@ -124,6 +124,11 @@ namespace Project.Scripts.Player
             }
         }
 
+        public void InitializeMove()
+        {
+            teamBattleState.SetMovingCharacter();
+        }
+
         public void MovePath()
         {
             Debug.Log("<color=green>Moving Player</color>");

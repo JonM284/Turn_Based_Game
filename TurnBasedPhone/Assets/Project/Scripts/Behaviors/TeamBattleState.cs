@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using Project.Scripts.Level;
 
 namespace Project.Scripts.Behaviors
 {
@@ -41,6 +42,9 @@ namespace Project.Scripts.Behaviors
         [SerializeField] private Button m_moveActionButton;
         [SerializeField] private Button m_abilityActionButton;
         [SerializeField] private GameObject teamCanvas;
+
+        //pathfinding
+        [HideInInspector] public Pathfinding pathfinder;
 
         public void InitilizeTeam(Color _teamColor)
         {
@@ -85,7 +89,7 @@ namespace Project.Scripts.Behaviors
         #region Button functions
         private void CallCurrentPlayerMove()
         {
-            currentPlayer.MovePath();
+            currentPlayer.InitializeMove();
         }
 
         private void CallCurrentPlayerAttack()
@@ -176,6 +180,11 @@ namespace Project.Scripts.Behaviors
         {
             cam.SetPosition(_target);
             currentPlayer = _player;
+        }
+
+        public void SetMovingCharacter()
+        {
+            pathfinder.SetStartPosition(currentPlayer.transform);
         }
 
 

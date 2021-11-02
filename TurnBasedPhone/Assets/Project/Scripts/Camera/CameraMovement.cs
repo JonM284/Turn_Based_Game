@@ -44,8 +44,10 @@ namespace Project.Scripts.Camera
         private Vector2 initialTouchPos;
         private Vector2 currentTouchPos;
         private bool fingerDown = false;
+        private bool initiatedRotation = false;
         [SerializeField] private float desiredRotationAmount;
         [SerializeField] private Vector3 rotationAmount;
+        [SerializeField] private Vector3 desiredRotation;
 
 
         private float rotationMax = 360;
@@ -77,9 +79,22 @@ namespace Project.Scripts.Camera
         void PlayerInput()
         {
 
-            Vector3 desiredRotation = new Vector3(0, desiredRotationAmount, 0);
+            if (m_player.GetAxisRaw("Horizontal") >= 0.5f && !initiatedRotation)
+            {
+                RotateLeft();
+                initiatedRotation = true;
+            }else if (m_player.GetAxisRaw("Horizontal") <= -0.5f && !initiatedRotation)
+            {
+                RotateRight();
+                initiatedRotation = true;
+            }else if (Mathf.Abs(m_player.GetAxisRaw("Horizontal")) == 0)
+            {
+                if (initiatedRotation) initiatedRotation = false;
+            }
+
+            desiredRotation = new Vector3(0, desiredRotationAmount, 0);
             rotationAmount = Vector3.Slerp(rotationAmount, desiredRotation, rotationSpeed * Time.deltaTime);
-            transform.localRotation = Quaternion.Euler(rotationAmount);
+            transform.localRotation = Quaternion.Euler(new Vector3(0,rotationAmount.y, 0));
 
             float zoom_set = m_player.GetAxisRaw("Vertical");
 
@@ -104,7 +119,6 @@ namespace Project.Scripts.Camera
         private void RotateCamera(float _amount)
         {
             desiredRotationAmount += _amount;
-
         }
 
         /// <summary>

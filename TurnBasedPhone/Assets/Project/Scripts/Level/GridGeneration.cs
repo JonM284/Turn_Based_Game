@@ -14,9 +14,12 @@ namespace Project.Scripts.Level
 
         [SerializeField] private Material offsetMaterial;
 
+        [SerializeField] private Vector3 middlePos;
+
         public GameObject[,] gridObjects;
 
         public int MiddleX { get; set; }
+        public int MiddleY { get; set; }
 
         public enum GenerationState
         {
@@ -32,6 +35,7 @@ namespace Project.Scripts.Level
             genState = GenerationState.GENERATING;
             gridObjects = new GameObject[gridAmount.x,gridAmount.y];
             MiddleX = gridAmount.x / 2;
+            MiddleY = gridAmount.y / 2;
             for (int x = 0; x < gridAmount.x; x++)
             {
                 for (int y = 0; y < gridAmount.y; y++)
@@ -52,14 +56,22 @@ namespace Project.Scripts.Level
                     {
                         currentGridPiece = Instantiate(gridFloorPrefab, spawnLoc, Quaternion.identity);
                     }
-                    currentGridPiece.transform.parent = this.transform;
 
+                    if (x == MiddleX && y == MiddleY) middlePos = currentGridPiece.transform.position;
+                    currentGridPiece.transform.parent = this.transform;
+                    //currentGridPiece.GetComponent<GridPiece>().SetupGridPiece();
                     gridObjects[x, y] = currentGridPiece;
                 }
             }
             genState = GenerationState.FINISHED;
         }
 
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireCube(transform.position, Vector3.one * gridPieceSize);
+        }
     }
 }
 

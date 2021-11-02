@@ -26,6 +26,8 @@ namespace Project.Scripts.Behaviors
         [SerializeField] private GridGeneration gridGen;
         [SerializeField] private TeamBattleState[] teams;
         [SerializeField] private BattleStateUI stateUI;
+        [SerializeField] private Pathfinding pathFinder;
+        [SerializeField] private A_Grid pathfindingGridGen;
 
         [SerializeField]private List<Color> teamDistinguishers;
 
@@ -39,6 +41,8 @@ namespace Project.Scripts.Behaviors
         private int testInt = 0;
 
         public bool RunThroughGame;
+
+
 
         private void Awake()
         {
@@ -87,6 +91,7 @@ namespace Project.Scripts.Behaviors
         {
             //setup grid
             Debug.Log("Begin Generating Grid");
+
             gridGen.GenerateGrid();
             yield return new WaitUntil(() => gridGen.genState == GridGeneration.GenerationState.FINISHED);
             Debug.Log("Finished generating grid");
@@ -96,6 +101,7 @@ namespace Project.Scripts.Behaviors
             {
                 int randomTeamColor = Random.Range(0, teamDistinguishers.Count);
                 team.InitilizeTeam(teamDistinguishers[randomTeamColor]);
+                team.pathfinder = this.pathFinder;
                 teamDistinguishers.RemoveAt(randomTeamColor);
             }
             StartCoroutine(PlayerLevelSetup());
@@ -178,6 +184,11 @@ namespace Project.Scripts.Behaviors
             stateUI.DoTextAnimation(2);
             yield return new WaitUntil(() => !stateUI.isInAnimation);
             Debug.Log("<color=red>Game Over</color>");
+        }
+
+        private void GeneratePathfidingGrid()
+        {
+
         }
     }
 }
