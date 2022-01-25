@@ -12,6 +12,8 @@ namespace Project.Scripts.Level
         public Transform startPos;
         public Transform endPos;
 
+        public static Pathfinding pathfinderInstance; 
+
 
         // Start is called before the first frame update
         void Start()
@@ -35,6 +37,16 @@ namespace Project.Scripts.Level
         public void SetEndPosition(Transform _end)
         {
             endPos = _end;
+        }
+
+        public void ChangeStartPosition(Transform _newObj)
+        {
+            startPos = _newObj;
+        }
+
+        public void ChangeEndPosition(Transform _newObj)
+        {
+            endPos = _newObj;
         }
 
         void FindPath(Vector3 _startPos, Vector3 _endPos)

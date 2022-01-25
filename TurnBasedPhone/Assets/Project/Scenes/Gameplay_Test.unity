@@ -10311,7 +10311,13 @@ MonoBehaviour:
   rotationSpeed: 1.5
   target: {fileID: 1043107930}
   zoom: 1
-  zoomSpeed: 1
+  zoomSpeed: 3
+  minProZoom: 1
+  maxProZoom: 3
+  isOrthographic: 1
+  orthoCamera: {fileID: 1687258584}
+  minZoom: 5
+  maxZoom: 10
   duration: 0.5
   intensity: 8
   rotationAngles: 8
@@ -10320,6 +10326,7 @@ MonoBehaviour:
   touchDistance: 50
   desiredRotationAmount: 0
   rotationAmount: {x: 0, y: 0, z: 0}
+  desiredRotation: {x: 0, y: 0, z: 0}
   rotationAddAmount: 0
 --- !u!4 &330066414
 Transform:
@@ -21206,7 +21213,7 @@ PrefabInstance:
     - target: {fileID: 1630794972795428178, guid: d8e63f7ef99192d468a746ddd3e7fb04, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 21eff2be64c4faf43b6a17c4a25a708b, type: 2}
+      objectReference: {fileID: 2100000, guid: c01f2fee817c2994ca90fb875e4059fd, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d8e63f7ef99192d468a746ddd3e7fb04, type: 3}
 --- !u!4 &675876948 stripped
@@ -34229,8 +34236,8 @@ Camera:
   m_GameObject: {fileID: 1687258581}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -34246,7 +34253,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
@@ -34270,14 +34277,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1687258581}
-  m_LocalRotation: {x: 0.15069364, y: -0.8253182, z: 0.2602218, w: 0.47793925}
+  m_LocalRotation: {x: 0.12970285, y: -0.83588344, z: 0.22397433, w: 0.48405752}
   m_LocalPosition: {x: 7.48, y: 6.04, z: 4.29}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1869242674}
   m_Father: {fileID: 330066414}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 35, y: -119.85, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: -119.85, z: 0}
 --- !u!114 &1687258586
 MonoBehaviour:
   m_ObjectHideFlags: 0

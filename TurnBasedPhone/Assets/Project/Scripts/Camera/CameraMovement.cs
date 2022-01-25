@@ -24,11 +24,22 @@ namespace Project.Scripts.Camera
         [Range(1, 2)]
         [SerializeField] private float zoom;
         [SerializeField] private float zoomSpeed;
+
+        [Header("Prospective settings")]
+        [SerializeField] private float minProZoom = 1;
+        [SerializeField] private float maxProZoom = 3;
+
+        [Header("Orthographic settings")]
+        [SerializeField] private bool isOrthographic;
+        [SerializeField] private UnityEngine.Camera orthoCamera;
+        [SerializeField] private float minZoom = 5, maxZoom = 10;
+
         //space is given in pixels on screen in unity
         [Space(25)]
         [SerializeField] private float duration;
         [Range(1,20)]
         [SerializeField] private int intensity;
+
         [Tooltip("Amount of positions the camera can rotate to")]
         [SerializeField] private int rotationAngles = 2;
         private bool m_isShakingCamera = false;
@@ -101,9 +112,19 @@ namespace Project.Scripts.Camera
             if (m_player.GetButtonDown("TestAction")) ShakeCamera();
 
             if (zoom_set == 1) zoom += Time.deltaTime * zoomSpeed;
-            else if(zoom_set == -1) zoom -= Time.deltaTime * zoomSpeed;
-            zoom = Mathf.Clamp(zoom, 1, 3);
-            transform.localScale = new Vector3(zoom, zoom, zoom);
+            else if (zoom_set == -1) zoom -= Time.deltaTime * zoomSpeed;
+
+            if (!isOrthographic)
+            {
+                zoom = Mathf.Clamp(zoom, minProZoom, maxProZoom);
+                transform.localScale = new Vector3(zoom, zoom, zoom);
+            }
+            else
+            {
+                zoom = Mathf.Clamp(zoom, minZoom, maxZoom);
+                orthoCamera.orthographicSize = zoom;
+            }
+            
         }
 
         private void RotateRight()
